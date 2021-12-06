@@ -1,0 +1,48 @@
+<div class="row mb-4">
+  <div class="btn-group" name='predicate'>
+    <button class="btn btn-primary" btnRadio="incoming"
+            [(ngModel)]="predicate"
+            (click)="loadMessages()"><i class="fa fa-envelope-open"></i> Incoming
+    </button>
+    <button class="btn btn-primary" btnRadio="outgoing"
+            [(ngModel)]="predicate"
+            (click)="loadMessages()"><i class="fa fa-paper-plane"></i> Outgoing
+    </button>
+  </div>
+</div>
+
+<div class="row" *ngIf="messages?.length === 0">
+  <h3>No messages</h3>
+</div>
+
+<div class="row" *ngIf="messages?.length > 0">
+  <table class="table table-hover" style="cursor: pointer">
+    <tr>
+      <th style="width: 60%">Message</th>
+      <th style="width: 20%">From / To</th>
+      <th style="width: 20%">Sent / Received</th>
+    </tr>
+    <tr *ngFor="let message of messages"
+        routerLink='{{ predicate === "outgoing"
+         ? "/members/" + message.recipientUsername
+         : "/members/" + message.senderUsername }}'
+        [queryParams]='{tab: 3}'>
+      <td>{{ message.content }}</td>
+      <td>
+        <div *ngIf="predicate === 'outgoing'">
+          <img class="img-thumbnail mr-2"
+              src="{{ message.recipientPhotoUrl  || './assets/user.png' }}"
+               alt="{{ message.recipientUsername }}">
+          <strong>{{ message.recipientUsername | titlecase }}</strong>
+        </div>
+        <div *ngIf="predicate !== 'outgoing'">
+          <img class="img-thumbnail mr-2"
+               src="{{ message.senderPhotoUrl  || './assets/user.png' }}"
+               alt="{{ message.senderUsername }}">
+          <strong>{{ message.senderUsername | titlecase }}</strong>
+        </div>
+      </td>
+      <td>{{ message.messageSent | timeago }}</td>
+    </tr>
+  </table>
+</div>
